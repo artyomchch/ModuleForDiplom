@@ -50,16 +50,16 @@ public class TestHookMethod implements IXposedHookLoadPackage {
 
 
 
-        XposedHelpers.findAndHookMethod("NetworkInterface", lpparam.classLoader, "getHardwareAddress",
-                Byte.class, new XC_MethodHook() {
-            @Override
-            protected void afterHookedMethod(XC_MethodHook.MethodHookParam param) throws Throwable {
-                super.afterHookedMethod(param);
-                Log.v("Quman", "启动程序：" + param.thisObject.toString() + " " + param.args[1]);
-                System.out.println("packagename: "+param.thisObject.getClass().getPackage()+
-                        " classname: "+param.thisObject.getClass().getName()+" method name: "+param.method.getName());
-            }
-        });
+//        XposedHelpers.findAndHookMethod("NetworkInterface", lpparam.classLoader, "getHardwareAddress",
+//                Byte.class, new XC_MethodHook() {
+//            @Override
+//            protected void afterHookedMethod(XC_MethodHook.MethodHookParam param) throws Throwable {
+//                super.afterHookedMethod(param);
+//                Log.v("Quman", "启动程序：" + param.thisObject.toString() + " " + param.args[1]);
+//                System.out.println("packagename: "+param.thisObject.getClass().getPackage()+
+//                        " classname: "+param.thisObject.getClass().getName()+" method name: "+param.method.getName());
+//            }
+//        });
 
 
 

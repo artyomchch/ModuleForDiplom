@@ -52,7 +52,7 @@ public class JNIHook implements IXposedHookLoadPackage {
 
         XposedHelpers.findAndHookMethod("java.lang.Runtime", lpparam.classLoader,
                 "loadLibrary", String.class, new XC_MethodHook() {
-
+    
                     @Override
                     protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                         super.beforeHookedMethod(param);

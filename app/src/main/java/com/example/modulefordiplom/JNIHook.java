@@ -15,12 +15,19 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage.LoadPackageParam;
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 
 
-/**
- * Created by nevermoe on 2018/06/11.
- */
+
 public class JNIHook implements IXposedHookLoadPackage {
     public void handleLoadPackage(final XC_LoadPackage.LoadPackageParam lpparam) throws Throwable {
         XposedBridge.log("Loaded app: " + lpparam.packageName);
+
+
+        if (!lpparam.packageName.equals("com.waze"))
+            return;
+        // different ways to specify the resources to be replaced
+        System.load("/data/data/com.waze/lib/libwaze.so");
+        XposedBridge.log("Loaded native hook");
+        //  lpparam.res.setReplacement("com.waze", "integer", "Variabletomodify", 1);
+
 
 
 

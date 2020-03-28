@@ -14,11 +14,13 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import static de.robv.android.xposed.XposedHelpers.findAndHookConstructor;
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 import static de.robv.android.xposed.XposedHelpers.findClass;
+import static de.robv.android.xposed.XposedHelpers.getDoubleField;
 
 public class Http implements IXposedHookLoadPackage {
     String packageName = null;
+
     public void handleLoadPackage(final XC_LoadPackage.LoadPackageParam lpparam) throws Throwable {
-        XposedBridge.log("Loaded app: " + lpparam.packageName);
+        //XposedBridge.log("Loaded app: " + lpparam.packageName);
 //        XposedBridge.log("aaaaaa" + "  " +  ClassLoader.getSystemClassLoader() + lpparam.packageName  +"\n " +
 //                "packagename: "+lpparam.getClass().getPackage()+" classname: "+lpparam.getClass().getName());
 
@@ -33,11 +35,13 @@ public class Http implements IXposedHookLoadPackage {
 
                 XposedBridge.log("URLSniffer: " + packageName + " Spec: " + param.args[0]);
 
+
             }
 
         });
 
-        findAndHookConstructor("java.net.URL", lpparam.classLoader, URL.class, String.class, new XC_MethodHook() {
+        findAndHookConstructor("java.net.URL", lpparam.classLoader, URL.class,
+                String.class, new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
 
@@ -54,6 +58,8 @@ public class Http implements IXposedHookLoadPackage {
 //                XposedBridge.log("Java.io.File: " + packageName + " Spec: " + param.args[0] + " " );
 //            }
 //        });
+
+
 
         findAndHookConstructor("java.net.URL", lpparam.classLoader, URL.class, String.class, URLStreamHandler.class, new XC_MethodHook() {
             @Override
@@ -94,12 +100,23 @@ public class Http implements IXposedHookLoadPackage {
 
         });
 
+        XposedHelpers.findAndHookConstructor("java.net.URI", lpparam.classLoader,
+                String.class, new XC_MethodHook() {
+                    @Override
+                    protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                        XposedBridge.log("java.net.URI: "
+                                + packageName + " Constructs a URI by parsing the given string: " + param.args[0]);
+                    }
+                });
 
 
 
 
     }
 
+    public void search(){
+
+    }
 
 
 

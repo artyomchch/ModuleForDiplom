@@ -1,7 +1,10 @@
 package com.example.modulefordiplom;
 
+import android.app.Activity;
 import android.util.Log;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.net.URL;
 import java.net.URLStreamHandler;
 
@@ -17,6 +20,10 @@ import static de.robv.android.xposed.XposedHelpers.findClass;
 import static de.robv.android.xposed.XposedHelpers.getDoubleField;
 
 public class Http implements IXposedHookLoadPackage {
+    SaveLogOfApp saveLogOfApp = new SaveLogOfApp("/storage/emulated/0/Download/EdXposedManager/test.txt");
+    //Listener
+    private String variable = "Initial";
+    private PropertyChangeSupport support = new PropertyChangeSupport(this);
     String packageName = null;
 
     public void handleLoadPackage(final XC_LoadPackage.LoadPackageParam lpparam) throws Throwable {
@@ -112,12 +119,17 @@ public class Http implements IXposedHookLoadPackage {
 
 
 
-    }
-
-    public void search(){
 
     }
 
+    private void addListener(PropertyChangeListener listener) {
+        support.addPropertyChangeListener(listener);
+    }
 
+    private void setVariable(String newValue) {
+        String oldValue = variable;
+        variable = newValue;
+        support.firePropertyChange("changeToSaveData", oldValue, newValue);
+    }
 
 }

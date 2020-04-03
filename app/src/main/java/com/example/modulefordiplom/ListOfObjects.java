@@ -1,10 +1,13 @@
 package com.example.modulefordiplom;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
 import android.util.Log;
 import android.view.View;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.io.DataOutputStream;
 import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
@@ -38,25 +41,33 @@ import static de.robv.android.xposed.XposedHelpers.getObjectField;
 
 public class ListOfObjects implements IXposedHookLoadPackage {
     String packageName = null;
+    //  AppHook appHook =new AppHook();
+    SaveLogOfApp saveLogOfApp = new SaveLogOfApp("/storage/emulated/0/Download/EdXposedManager/test.txt");
+    //Listener
+    private String variable = "Initial";
+    private PropertyChangeSupport support = new PropertyChangeSupport(this);
+
 
     @Override
-    public void handleLoadPackage(XC_LoadPackage.LoadPackageParam lpparam) throws Throwable {
-      //  XposedBridge.log("Loaded app: " + lpparam.packageName);
+    public void handleLoadPackage(final XC_LoadPackage.LoadPackageParam lpparam) throws Throwable {
+        //  XposedBridge.log("Loaded app: " + lpparam.packageName);
         packageName = lpparam.packageName;
-
+        final String log = "some hook";
 
             //java.io.File
             XposedHelpers.findAndHookConstructor("java.io.File", lpparam.classLoader,
-                    String.class,  new XC_MethodHook() {
+                    String.class, new XC_MethodHook() {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                             XposedBridge.log("Java.io.File: " + packageName + " pathname: " + param.args[0]);
+                            addListener(saveLogOfApp);
+                            setVariable(param.args[0].toString() + "\n");
                         }
                     });
 
             //android.accounts.Account
             XposedHelpers.findAndHookConstructor("android.accounts.Account", lpparam.classLoader,
-                    String.class,String.class,  new XC_MethodHook() {
+                    String.class, String.class, new XC_MethodHook() {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                             XposedBridge.log("android.accounts.Account: " + packageName + " name: " + param.args[0] +
@@ -66,7 +77,7 @@ public class ListOfObjects implements IXposedHookLoadPackage {
 
             //android.service.voice.VoiceInteractionSession
             XposedHelpers.findAndHookConstructor("android.service.voice.VoiceInteractionSession", lpparam.classLoader,
-                    Context.class,  new XC_MethodHook() {
+                    Context.class, new XC_MethodHook() {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                             XposedBridge.log("android.service.voice.VoiceInteractionSession: " + packageName + " context: " + param.args[0]);
@@ -85,7 +96,7 @@ public class ListOfObjects implements IXposedHookLoadPackage {
 
             //android.view.inputmethod.BaseInputConnection
             XposedHelpers.findAndHookConstructor("android.view.inputmethod.BaseInputConnection", lpparam.classLoader,
-                    View.class, boolean.class,  new XC_MethodHook() {
+                    View.class, boolean.class, new XC_MethodHook() {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                             XposedBridge.log("android.view.inputmethod.BaseInputConnection: "
@@ -94,6 +105,17 @@ public class ListOfObjects implements IXposedHookLoadPackage {
                         }
                     });
 
+            XposedHelpers.findAndHookMethod(Activity.class,"onStop",
+                    new XC_MethodHook() {
+                @Override
+                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                    super.beforeHookedMethod(param);
+                    XposedBridge.log(packageName + " " + "work on stop");
+                    addListener(saveLogOfApp);
+                    setVariable("true");
+                }
+            });
+
             //java.net.URI
             XposedHelpers.findAndHookConstructor("java.net.URI", lpparam.classLoader,
                     String.class, new XC_MethodHook() {
@@ -101,8 +123,11 @@ public class ListOfObjects implements IXposedHookLoadPackage {
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                             XposedBridge.log("java.net.URI: "
                                     + packageName + " Constructs a URI by parsing the given string: " + param.args[0]);
+
                         }
                     });
+
+
 
             //java.net.URL
             findAndHookConstructor("java.net.URL", lpparam.classLoader, String.class, new XC_MethodHook() {
@@ -128,10 +153,10 @@ public class ListOfObjects implements IXposedHookLoadPackage {
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
 
                     XposedBridge.log("URLSniffer: " + packageName + " Spec: " + param.args[0] + " " + param.args[1] + " " + param.args[2] + " "
-                            );
+                    );
 
                 }
-           });
+            });
             findAndHookConstructor("java.net.URL", lpparam.classLoader, String.class, String.class, String.class, new XC_MethodHook() {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
@@ -161,7 +186,7 @@ public class ListOfObjects implements IXposedHookLoadPackage {
             });
 
             findAndHookMethod("android.net.wifi.WifiManager", lpparam.classLoader,
-                    "setWifiEnabled", "boolean",  new XC_MethodHook() {
+                    "setWifiEnabled", "boolean", new XC_MethodHook() {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                             param.args[0] = false;
@@ -171,7 +196,7 @@ public class ListOfObjects implements IXposedHookLoadPackage {
 
 
             findAndHookMethod("android.net.LinkAddress", lpparam.classLoader,
-                    "getPrefixLength()", "int",  new XC_MethodHook() {
+                    "getPrefixLength()", "int", new XC_MethodHook() {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
 
@@ -180,31 +205,50 @@ public class ListOfObjects implements IXposedHookLoadPackage {
                         }
                     });
 
-        XposedHelpers.findAndHookMethod("java.net.InetAddress", lpparam.classLoader,
-                "getAllByName", String.class ,new XC_MethodHook() {
-                    @Override
-                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                        super.afterHookedMethod(param);
-                        XposedBridge.log("Quman " + param.getResult().toString() + param.args[0] );
+            XposedHelpers.findAndHookMethod("java.net.InetAddress", lpparam.classLoader,
+                    "getAllByName", String.class, new XC_MethodHook() {
+                        @Override
+                        protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                            super.afterHookedMethod(param);
+                            XposedBridge.log("Quman " + param.getResult().toString() + param.args[0]);
 
-                    }
-                });
-
-
+                        }
+                    });
 
 
-        XposedHelpers.findAndHookMethod("NetworkInterface", lpparam.classLoader, "getHardwareAddress",
-                Byte.class, new XC_MethodHook() {
-                    @Override
-                    protected void afterHookedMethod(XC_MethodHook.MethodHookParam param) throws Throwable {
-                        super.afterHookedMethod(param);
-                        Log.v("Quman","：" + param.thisObject.toString() + " " + param.args[1]);
-                        System.out.println("packagename: "+param.thisObject.getClass().getPackage()+
-                                " classname: "+param.thisObject.getClass().getName()+" method name: "+param.method.getName());
-                    }
-                });
+            XposedHelpers.findAndHookMethod("NetworkInterface", lpparam.classLoader, "getHardwareAddress",
+                    Byte.class, new XC_MethodHook() {
+                        @Override
+                        protected void afterHookedMethod(XC_MethodHook.MethodHookParam param) throws Throwable {
+                            super.afterHookedMethod(param);
+                            Log.v("Quman", "：" + param.thisObject.toString() + " " + param.args[1]);
+                            System.out.println("packagename: " + param.thisObject.getClass().getPackage() +
+                                    " classname: " + param.thisObject.getClass().getName() + " method name: " + param.method.getName());
+                        }
+                    });
 
-        }
+
+
+
+
+
+    }
+
+
+
+    private void addListener(PropertyChangeListener listener) {
+        support.addPropertyChangeListener(listener);
+    }
+
+    private void setVariable(String newValue) {
+        String oldValue = variable;
+        variable = newValue;
+        support.firePropertyChange("MyTextProperty", oldValue, newValue);
+    }
+
+
 
 
 }
+
+

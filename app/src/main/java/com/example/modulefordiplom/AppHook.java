@@ -1,8 +1,12 @@
 package com.example.modulefordiplom;
 
-import android.app.Activity;
 import android.app.AndroidAppHelper;
 import android.content.Context;
+
+import com.example.modulefordiplom.hooks.JNIHook;
+import com.example.modulefordiplom.hooks.JavaIoFile;
+import com.example.modulefordiplom.hooks.URL_Hook;
+import com.example.modulefordiplom.save_logs.SaveNameApp;
 
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.XC_MethodHook;
@@ -19,9 +23,9 @@ public class AppHook implements IXposedHookLoadPackage {
 
 
     SaveNameApp saveText = new SaveNameApp("/storage/emulated/0/Download/EdXposedManager/appText.txt");
-    Http http = new Http();
+    URL_Hook url_hook = new URL_Hook();
     JNIHook jni = new JNIHook();
-    ListOfObjects listOfObjects = new ListOfObjects();
+    JavaIoFile javaIoFile = new JavaIoFile();
     Strings strings = new Strings();
     Context context = (Context) AndroidAppHelper.currentApplication();
 
@@ -54,8 +58,9 @@ public class AppHook implements IXposedHookLoadPackage {
 
         if (lpparam.packageName.equals(saveText.read())){
             XposedBridge.log("Next Stage: " + lpparam.packageName);
-            http.handleLoadPackage(lpparam);
-            listOfObjects.handleLoadPackage(lpparam);
+
+            url_hook.handleLoadPackage(lpparam);
+            javaIoFile.handleLoadPackage(lpparam);
 
 
 
@@ -65,70 +70,8 @@ public class AppHook implements IXposedHookLoadPackage {
 
 
 
-        //XposedBridge.log("Loaded app 2: " + lpparam.packageName + " " + saveText.openText(););
 
 
-
-
-        //Метод информирования об остановки жизненого цикла Activity (onDestroy)
-//        XposedHelpers.findAndHookMethod(Activity.class, "onStart", new XC_MethodHook() {
-//            @Override
-//            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-//                super.beforeHookedMethod(param);
-//                XposedBridge.log( lpparam.packageName + " " +"work on start");
-//            }
-//
-//            @Override
-//            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-//                super.afterHookedMethod(param);
-//                //   XposedBridge.log("work on stop");
-//            }
-//        });
-//
-//
-//        XposedHelpers.findAndHookMethod(Activity.class, "onResume", new XC_MethodHook() {
-//            @Override
-//            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-//                super.beforeHookedMethod(param);
-//                XposedBridge.log(lpparam.packageName + " " + "work on onResume");
-//            }
-//
-//            @Override
-//            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-//                super.afterHookedMethod(param);
-//                //   XposedBridge.log("work on stop");
-//            }
-//        });
-//
-//        XposedHelpers.findAndHookMethod(Activity.class, "onPause", new XC_MethodHook() {
-//            @Override
-//            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-//                super.beforeHookedMethod(param);
-//                XposedBridge.log(lpparam.packageName + " " + "work on onPause");
-//            }
-//
-//            @Override
-//            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-//                super.afterHookedMethod(param);
-//                //   XposedBridge.log("work on stop");
-//            }
-//        });
-
-
-
-//        XposedHelpers.findAndHookMethod(Activity.class, "onDestroy", new XC_MethodHook() {
-//            @Override
-//            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-//                super.beforeHookedMethod(param);
-//                XposedBridge.log( lpparam.packageName + " " + "work on destroy");
-//            }
-//
-//            @Override
-//            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-//                super.afterHookedMethod(param);
-//                //   XposedBridge.log("work on stop");
-//            }
-//        });
 
 
     }

@@ -1,4 +1,4 @@
-package com.example.modulefordiplom;
+package com.example.modulefordiplom.hooks;
 
 import android.util.Log;
 

@@ -1,4 +1,4 @@
-package com.example.modulefordiplom;
+package com.example.modulefordiplom.save_logs;
 
 import android.content.Context;
 import android.widget.Toast;

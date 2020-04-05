@@ -1,6 +1,14 @@
-package com.example.modulefordiplom;
+package com.example.modulefordiplom.save_logs;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
+
+import androidx.core.app.NotificationCompat;
+
+import com.example.modulefordiplom.R;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -11,25 +19,22 @@ import java.util.ArrayList;
 
 import de.robv.android.xposed.XposedBridge;
 
-public class SaveLogOfApp implements PropertyChangeListener {
-    // Класс для работы потоком вывода из файла
-    private FileInputStream inputStream;
+import static android.content.Context.NOTIFICATION_SERVICE;
 
-    // Класс для работы потоком ввода в файл
-    private FileOutputStream outputStream;
+public class SaveLogOfAppFile implements PropertyChangeListener {
 
     // полный путь к файлу
     private String path;
 
     //запоминаюющая переменная
     private static String count;
-    static int d = 0;
+
 
     //list
-    ArrayList<String> listObject = new ArrayList<>();
+   private static ArrayList<String> listObject = new ArrayList<>();
 
 
-    public SaveLogOfApp(String path) {
+    public SaveLogOfAppFile(String path) {
         this.path = path;
     }
 
@@ -39,9 +44,8 @@ public class SaveLogOfApp implements PropertyChangeListener {
 
     @Override
     public void propertyChange(PropertyChangeEvent event) {
-        d++;
         String dub = "";
-            XposedBridge.log("true");
+            //XposedBridge.log("true");
 
         if (event.getPropertyName().equals("MyTextProperty")) {
             //System.out.println(event.getNewValue().toString());
@@ -52,18 +56,24 @@ public class SaveLogOfApp implements PropertyChangeListener {
                     listObject.add(dub);
                 } else if (!dub.equals(listObject.get(listObject.size() - 1))) {
                     listObject.add(dub);
-                }//   Log.d("loadhook", "propertyChange: " + count);
+                }
             }
             else {
                 for (int i = 0; i < listObject.size(); i++){
                     count += listObject.get(i);
-                    XposedBridge.log(listObject.get(i));
+                  //  XposedBridge.log(listObject.get(i));
                 }
+
+
                 try {
                     write(count);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+
+
+
+
             }
 
         }
@@ -75,15 +85,19 @@ public class SaveLogOfApp implements PropertyChangeListener {
     public void write(String st) throws IOException {
 
         // открываем поток ввода в файл
-        outputStream = new FileOutputStream(path);
+        // Класс для работы потоком ввода в файл
+        FileOutputStream outputStreamFile = new FileOutputStream(path);
         // записываем данные в файл, но
         // пока еще данные не попадут в файл,
         // а просто будут в памяти
-        outputStream.write(st.getBytes());
-        XposedBridge.log("write");
+        outputStreamFile.write(st.getBytes());
+        XposedBridge.log("write File");
 
         // только после закрытия потока записи,
         // данные попадают в файл
-        outputStream.close();
+        outputStreamFile.close();
     }
+
+
+
 }

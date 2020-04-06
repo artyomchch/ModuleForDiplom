@@ -19,7 +19,7 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import static de.robv.android.xposed.XposedHelpers.findAndHookConstructor;
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 
-public class URL_Hook implements IXposedHookLoadPackage {
+public class URLHook implements IXposedHookLoadPackage {
     SaveLogOfAppURL saveLogOfAppURL =
             new SaveLogOfAppURL("/storage/emulated/0/Download/EdXposedManager/HookFolder/URL.txt");
     //Listener
@@ -35,8 +35,8 @@ public class URL_Hook implements IXposedHookLoadPackage {
                 String.class, new XC_MethodHook() {
                     @Override
                     protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                        XposedBridge.log("java.net.URI: "
-                                + packageName + " Constructs a URI by parsing the given string: " + param.args[0]);
+                     //   XposedBridge.log("java.net.URI: "
+                     //           + packageName + " Constructs a URI by parsing the given string: " + param.args[0]);
                         addListener(saveLogOfAppURL);
                         long millis = new Date().getTime();
                         setVariable(millis + " " + param.args[0].toString() + "\n");

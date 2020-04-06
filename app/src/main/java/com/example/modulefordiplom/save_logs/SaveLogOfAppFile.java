@@ -18,6 +18,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import de.robv.android.xposed.XposedBridge;
+import io.reactivex.Observable;
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
 
@@ -65,13 +69,8 @@ public class SaveLogOfAppFile implements PropertyChangeListener {
                 }
 
 
-                try {
-                    write(count);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-
+                //  write(count);
+                multithreading();
 
 
             }
@@ -80,6 +79,36 @@ public class SaveLogOfAppFile implements PropertyChangeListener {
 
     }
 
+
+    public void multithreading(){
+        Observable.just(1)
+                .subscribeOn(Schedulers.io())
+                .doOnNext(integer -> write(count))
+                .observeOn(Schedulers.io())
+                .subscribe(new Observer<Integer>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(Integer integer) {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+
+                    }
+                });
+
+    }
 
 
     public void write(String st) throws IOException {
@@ -91,7 +120,7 @@ public class SaveLogOfAppFile implements PropertyChangeListener {
         // пока еще данные не попадут в файл,
         // а просто будут в памяти
         outputStreamFile.write(st.getBytes());
-        XposedBridge.log("write File");
+        XposedBridge.log("write File " + Thread.currentThread().getName());
 
         // только после закрытия потока записи,
         // данные попадают в файл

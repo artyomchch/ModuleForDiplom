@@ -16,7 +16,7 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import static de.robv.android.xposed.XposedHelpers.findAndHookConstructor;
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 
-public class JavaIoFile implements IXposedHookLoadPackage {
+public class JavaIoFileHook implements IXposedHookLoadPackage {
     private String packageName = null;
     private SaveLogOfAppFile saveLogOfAppFile =
             new SaveLogOfAppFile("/storage/emulated/0/Download/EdXposedManager/HookFolder/javaIoFile.txt");
@@ -35,7 +35,7 @@ public class JavaIoFile implements IXposedHookLoadPackage {
                     String.class, new XC_MethodHook() {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            XposedBridge.log("Java.io.File: " + packageName + " pathname: " + param.args[0]);
+                           // XposedBridge.log("Java.io.File: " + packageName + " pathname: " + param.args[0]);
                             addListener(saveLogOfAppFile);
                             setVariable(param.args[0].toString() + "\n");
                         }

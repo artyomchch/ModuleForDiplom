@@ -66,7 +66,7 @@ public class SaveLogOfAppURL implements PropertyChangeListener {
         // пока еще данные не попадут в файл,
         // а просто будут в памяти
         outputStream.write(st.getBytes());
-        XposedBridge.log("write URL");
+        XposedBridge.log("write URL" +  " " + Thread.currentThread().getName());
 
         // только после закрытия потока записи,
         // данные попадают в файл

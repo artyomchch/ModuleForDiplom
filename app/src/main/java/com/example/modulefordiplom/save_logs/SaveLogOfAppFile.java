@@ -32,7 +32,8 @@ public class SaveLogOfAppFile implements PropertyChangeListener {
 
     //запоминаюющая переменная
     private static String count;
-
+    //запоминающий счетчик
+    private static int c = 0;
 
     //list
    private static ArrayList<String> listObject = new ArrayList<>();
@@ -67,11 +68,11 @@ public class SaveLogOfAppFile implements PropertyChangeListener {
                     count += listObject.get(i);
                   //  XposedBridge.log(listObject.get(i));
                 }
-
-
-                //  write(count);
-                multithreading();
-
+                c++;
+                if (c == 1) {
+                    //  write(count);
+                    multithreading();
+                }
 
             }
 
@@ -81,6 +82,8 @@ public class SaveLogOfAppFile implements PropertyChangeListener {
 
 
     public void multithreading(){
+
+
         Observable.just(1)
                 .subscribeOn(Schedulers.io())
                 .doOnNext(integer -> write(count))
@@ -98,12 +101,12 @@ public class SaveLogOfAppFile implements PropertyChangeListener {
 
                     @Override
                     public void onError(Throwable e) {
-
+                            XposedBridge.log(e);
                     }
 
                     @Override
                     public void onComplete() {
-
+                        XposedBridge.log("Complete File");
 
                     }
                 });
@@ -113,18 +116,35 @@ public class SaveLogOfAppFile implements PropertyChangeListener {
 
     public void write(String st) throws IOException {
 
-        // открываем поток ввода в файл
-        // Класс для работы потоком ввода в файл
-        FileOutputStream outputStreamFile = new FileOutputStream(path);
-        // записываем данные в файл, но
-        // пока еще данные не попадут в файл,
-        // а просто будут в памяти
-        outputStreamFile.write(st.getBytes());
-        XposedBridge.log("write File " + Thread.currentThread().getName());
 
-        // только после закрытия потока записи,
-        // данные попадают в файл
-        outputStreamFile.close();
+            // открываем поток ввода в файл
+            // Класс для работы потоком ввода в файл
+            FileOutputStream outputStreamFile = new FileOutputStream(path);
+            // записываем данные в файл, но
+            // пока еще данные не попадут в файл,
+            // а просто будут в памяти
+            outputStreamFile.write(st.getBytes());
+            XposedBridge.log("write File " + Thread.currentThread().getName());
+
+            // только после закрытия потока записи,
+            // данные попадают в файл
+            outputStreamFile.close();
+
+//        FileOutputStream outputStreamFileApp = new
+//                FileOutputStream("/storage/emulated/0/Download/EdXposedManager/appText.txt");
+//        // записываем данные в файл, но
+//        // пока еще данные не попадут в файл,
+//        // а просто будут в памяти
+//        outputStreamFileApp.write("true".getBytes());
+//        XposedBridge.log("write File Other Hook");
+//
+//        // только после закрытия потока записи,
+//        // данные попадают в файл
+//        outputStreamFileApp.close();
+
+
+
+
     }
 
 

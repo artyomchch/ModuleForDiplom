@@ -7,6 +7,7 @@ import android.view.View;
 
 import com.example.modulefordiplom.hooks.JNIHook;
 import com.example.modulefordiplom.hooks.JavaIoFileHook;
+import com.example.modulefordiplom.hooks.MainHook;
 import com.example.modulefordiplom.hooks.OtherHooks;
 import com.example.modulefordiplom.hooks.URLHook;
 import com.example.modulefordiplom.save_logs.SaveLogOfAppFile;
@@ -38,6 +39,7 @@ public class AppHook implements IXposedHookLoadPackage {
 
     private SaveNameApp saveText = new SaveNameApp("/storage/emulated/0/Download/EdXposedManager/appText.txt");
     //Hooks
+    private MainHook mainHook = new MainHook();
     private URLHook urlHook = new URLHook();
     private JavaIoFileHook javaIoFileHook = new JavaIoFileHook();
     private OtherHooks otherHooks = new OtherHooks();
@@ -67,102 +69,33 @@ public class AppHook implements IXposedHookLoadPackage {
                             super.beforeHookedMethod(param);
                             XposedBridge.log("start hook" + " name of app: " + param.args[0] + " id app: " + param.args[1]);
                             nameApp = param.args[0].toString();
-                            addListener(appHookTransport);
-                            setVariable(param.args[0].toString());
-
-
-
                         }
-
                         @Override
                         public void afterHookedMethod(MethodHookParam param) throws Throwable {
                             super.afterHookedMethod(param);
                             saveText.write(nameApp);
-
-
                         }
                     });
 
-
-
+        } //
+        if (lpparam.packageName.equals(saveText.read())) {
+            XposedBridge.log("Next Stage: " + lpparam.packageName + " " + Thread.currentThread().getName());
+            mainHook.handleLoadPackage(lpparam);
         }
 
-            //XposedBridge.log("wanna see argument " + AppHookTransport.getTransport());
-
-       research(lpparam);
 
 
 
     }
 
 
-    public void research(XC_LoadPackage.LoadPackageParam lpparam){
-        try {
-            if (lpparam.packageName.equals(saveText.read())
-                    || lpparam.packageName.equals("com.example.diplompart2")) {
-                XposedBridge.log("Next Stage: " + lpparam.packageName + " " + Thread.currentThread().getName());
-
-                try {
-                    urlHook.handleLoadPackage(lpparam);
-                   // urlHook.handleLoadPackage2(lpparam);
-                  //  javaIoFileHook.handleLoadPackage(lpparam);
-                 //   otherHooks.handleLoadPackage(lpparam);
-                } catch (Throwable throwable) {
-                    throwable.printStackTrace();
-                }
 
 
 
 
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
 
 
-
-   public void file (XC_LoadPackage.LoadPackageParam lpparam){
-       XposedBridge.log("Name of thread: " + Thread.currentThread().getName());
-       try {
-           javaIoFileHook.handleLoadPackage(lpparam);
-       } catch (Throwable throwable) {
-           throwable.printStackTrace();
-       }
-
-   }
-
-    public void url (XC_LoadPackage.LoadPackageParam lpparam){
-        XposedBridge.log("Name of thread: " + Thread.currentThread().getName());
-        try {
-            urlHook.handleLoadPackage(lpparam);
-        } catch (Throwable throwable) {
-            throwable.printStackTrace();
-        }
-
-    }
-
-    public void other (XC_LoadPackage.LoadPackageParam lpparam){
-        XposedBridge.log("Name of thread: " + Thread.currentThread().getName());
-        try {
-            otherHooks.handleLoadPackage(lpparam);
-        } catch (Throwable throwable) {
-            throwable.printStackTrace();
-        }
-
-    }
-
-
-    private void addListener(PropertyChangeListener listener) {
-        support.addPropertyChangeListener(listener);
-    }
-
-    private void setVariable(String newValue) {
-        String oldValue = variable;
-        variable = newValue;
-        support.firePropertyChange("appHook", oldValue, newValue);
-    }
 
 
 }

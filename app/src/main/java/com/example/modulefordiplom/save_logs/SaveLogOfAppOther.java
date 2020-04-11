@@ -62,14 +62,14 @@ public class SaveLogOfAppOther implements PropertyChangeListener {
 
 
 
-    private String makeJson(){
-        c++;
-        Gson gson = new Gson();
-        Strings strings = new Strings(androidAccountsAccount, androidServiceVoiceVoiceInteractionSession,
-                androidTelephonyPhoneStateListener, androidViewInputmethodBaseInputConnection,
-                javaLangReflectMethod);
-        return gson.toJson(strings);
-    }
+//    private String makeJson(){
+//        c++;
+//        Gson gson = new Gson();
+////        Strings strings = new Strings(androidAccountsAccount, androidServiceVoiceVoiceInteractionSession,
+////                androidTelephonyPhoneStateListener, androidViewInputmethodBaseInputConnection,
+////                javaLangReflectMethod);
+//       // return gson.toJson(strings);
+//    }
 
 
     public void write(String st) throws IOException {
@@ -109,36 +109,36 @@ public class SaveLogOfAppOther implements PropertyChangeListener {
 
     }
 
-    public void multithreading(){
+    public void multithreading() {
 
 
-        Observable.just(1)
-                .subscribeOn(Schedulers.newThread())
-                .doOnNext(integer -> write(makeJson()))
-                .observeOn(Schedulers.newThread())
-                .subscribe(new Observer<Integer>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onNext(Integer integer) {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        XposedBridge.log(e);
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        XposedBridge.log("Complete URL");
-
-                    }
-                });
-
+//        Observable.just(1)
+//                .subscribeOn(Schedulers.newThread())
+//                .doOnNext(integer -> write(makeJson()))
+//                .observeOn(Schedulers.newThread())
+//                .subscribe(new Observer<Integer>() {
+//                    @Override
+//                    public void onSubscribe(Disposable d) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onNext(Integer integer) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        XposedBridge.log(e);
+//                    }
+//
+//                    @Override
+//                    public void onComplete() {
+//                        XposedBridge.log("Complete URL");
+//
+//                    }
+//                });
+//
+//    }
     }
-
 }

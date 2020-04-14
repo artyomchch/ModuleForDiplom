@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.view.View;
 
-import com.example.modulefordiplom.save_logs.SaveLogOfAppFile;
 import com.example.modulefordiplom.save_logs.SaveLogsOfApp;
 
 import java.beans.PropertyChangeListener;

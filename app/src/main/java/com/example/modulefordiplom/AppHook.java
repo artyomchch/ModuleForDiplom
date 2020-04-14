@@ -1,48 +1,26 @@
 package com.example.modulefordiplom;
 
-import android.app.AndroidAppHelper;
-import android.content.Context;
-import android.util.Log;
-import android.view.View;
-
 import com.example.modulefordiplom.hooks.JNIHook;
-import com.example.modulefordiplom.hooks.JavaIoFileHook;
 import com.example.modulefordiplom.hooks.MainHook;
-import com.example.modulefordiplom.hooks.OtherHooks;
-import com.example.modulefordiplom.hooks.URLHook;
-import com.example.modulefordiplom.save_logs.SaveLogOfAppFile;
-import com.example.modulefordiplom.save_logs.SaveLogOfAppOther;
-import com.example.modulefordiplom.save_logs.SaveLogOfAppURL;
 import com.example.modulefordiplom.save_logs.SaveNameApp;
 
-import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.io.IOException;
 
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
-import io.reactivex.Observable;
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
 
 import static de.robv.android.xposed.XposedHelpers.findAndHookConstructor;
 
 public class AppHook implements IXposedHookLoadPackage {
 
     private static   String nameApp = "s!";
-    private AppHookTransport appHookTransport = new AppHookTransport();
 
     private SaveNameApp saveText = new SaveNameApp("/storage/emulated/0/Download/EdXposedManager/appText.txt");
     //Hooks
     private MainHook mainHook = new MainHook();
-    private URLHook urlHook = new URLHook();
-    private JavaIoFileHook javaIoFileHook = new JavaIoFileHook();
-    private OtherHooks otherHooks = new OtherHooks();
     private JNIHook jni = new JNIHook();
     //save hooks
 

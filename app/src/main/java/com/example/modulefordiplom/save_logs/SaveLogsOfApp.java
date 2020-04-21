@@ -21,7 +21,7 @@ import io.reactivex.schedulers.Schedulers;
 
 import static android.content.ContentValues.TAG;
 
-public class SaveLogsOfApp implements PropertyChangeListener {
+public class SaveLogsOfApp  {
     private static ArrayList<String> androidAccountsAccount = new ArrayList<>();   //#1
     private static ArrayList<String> androidServiceVoiceVoiceInteractionSession = new ArrayList<>();   //#2
     private static ArrayList<String> androidTelephonyPhoneStateListener = new ArrayList<>();   //#3
@@ -30,66 +30,42 @@ public class SaveLogsOfApp implements PropertyChangeListener {
     private static ArrayList<String> javaIoFile = new ArrayList<>(); //#f
     private static ArrayList<String> javaNetUri = new ArrayList<>(); //#u
 
-    private static ArrayList<String> allMethodsOfHooks = new ArrayList<>();
+    public static ArrayList<String> allMethodsOfHooks = new ArrayList<>();
+
+    public static void setAllMethodsOfHooks(String s) {
+       // SaveLogsOfApp.allMethodsOfHooks.add(s);
+        allMethodsOfHooks.add(s);
+        Log.d("I/EdXposed-Bridge:",   " count: " +String.valueOf(allMethodsOfHooks.size()));
+    }
 
     static String  getReload = "";
     private static int c = 0;
 
 
-    @Override
-    public void propertyChange(PropertyChangeEvent event) {
-        String getInfo = "";
-        if (event.getPropertyName().equals("onStop")){
-            getInfo = event.getNewValue().toString();
-            if (!(getInfo.equals("true")|| getInfo.equals(""))) {
-               if (!getInfo.equals(getReload)){
-                   getReload = getInfo;
-                   allMethodsOfHooks.add(getInfo);
-                   Log.d("I/EdXposed-Bridge:",   " count: " +String.valueOf(allMethodsOfHooks.size()));
-               }
-            }
-            else {
-             //   XposedBridge.log(String.valueOf(javaNetUri.size()));
-              //  XposedBridge.log("get get get get get get get get get get");
-                if (c == 0) {
-                   multithreading();
-                    c++;
-                }
-            }
-        }
-    }
-
-    private String makeJson(){
-//        String param = "";
-//        for (int i = 0; i < allMethodsOfHooks.size(); i++){
-//            StringBuilder sb = new StringBuilder(allMethodsOfHooks.get(i));
-//            sb.deleteCharAt(0);
-//            char firstIndex = allMethodsOfHooks.get(i).charAt(0);
-//            String mainIndex = String.valueOf(firstIndex);
-//            param = sb.toString();
-//          //  Log.d("I/EdXposed-Bridge:", param);
-//            //Log.d("I/EdXposed-Bridge:", String.valueOf(firstIndex));
-//
-//            if (mainIndex.equals("1")) {
-//                androidAccountsAccount.add(param);
-//            } else if (mainIndex.equals("2")) {
-//                androidServiceVoiceVoiceInteractionSession.add(param);
-//            } else if (mainIndex.equals("3")) {
-//                androidTelephonyPhoneStateListener.add(param);
-//            } else if (mainIndex.equals("4")) {
-//                androidViewInputmethodBaseInputConnection.add(param);
-//            } else if (mainIndex.equals("5")) {
-//                javaLangReflectMethod.add(param);
-//            } else if (mainIndex.equals("f")) {
-//                javaIoFile.add(param);
-//            } else if (mainIndex.equals("u")) {
-//                Log.d("I/EdXposed-Bridge:", javaNetUri.get(5));
-//                javaNetUri.add(param);
+//    @Override
+//    public void propertyChange(PropertyChangeEvent event) {
+//        String getInfo = "";
+//        if (event.getPropertyName().equals("onStop")){
+//            getInfo = event.getNewValue().toString();
+//            if (!(getInfo.equals("true")|| getInfo.equals(""))) {
+//               if (!getInfo.equals(getReload)){
+//                   getReload = getInfo;
+//                   allMethodsOfHooks.add(getInfo);
+//                   Log.d("I/EdXposed-Bridge:",   " count: " +String.valueOf(allMethodsOfHooks.size()));
+//               }
+//            }
+//            else {
+//             //   XposedBridge.log(String.valueOf(javaNetUri.size()));
+//              //  XposedBridge.log("get get get get get get get get get get");
+//                if (c < 10) {
+//                   multithreading();
+//                    c++;
+//                }
 //            }
 //        }
-//        Log.d("I/EdXposed-Bridge:", String.valueOf(javaNetUri.size()));
-//        Log.d("I/EdXposed-Bridge:", String.valueOf(javaIoFile.size()));
+//    }
 
+    private String makeJson(){
         Gson gson = new Gson();
         Strings strings = new Strings(allMethodsOfHooks);
         return gson.toJson(strings);
@@ -113,9 +89,9 @@ public class SaveLogsOfApp implements PropertyChangeListener {
         outputStreamFile.close();
     }
 
-    private void multithreading(){
+    public void multithreading(){
         Observable.just(1)
-                .subscribeOn(Schedulers.io())
+                .subscribeOn(Schedulers.newThread())
                 .doOnNext(integer -> write(makeJson()))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<Integer>() {

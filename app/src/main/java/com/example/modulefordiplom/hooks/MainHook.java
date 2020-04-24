@@ -85,15 +85,6 @@ public class MainHook implements IXposedHookLoadPackage {
     }
 
 
-    private void addListener(PropertyChangeListener listener) {
-        support.addPropertyChangeListener(listener);
-    }
-
-    private void setVariable(String newValue) {
-        String oldValue = variable;
-        variable = newValue;
-        support.firePropertyChange("onStop", oldValue, newValue);
-    }
 
     private void multuFile(XC_LoadPackage.LoadPackageParam lpparam){
         Observable.just(1)
@@ -808,6 +799,9 @@ public class MainHook implements IXposedHookLoadPackage {
                 Log.d("I/EdXposed-Bridge ",lpparam +" "+ targetClass+" " + methodConstructor+" " +
                         classShorthand + " object initialized. "+
                                 "appInfo = "+lpparam.appInfo);
+                SaveLogsOfApp.setAllMethodsOfHooks( "8"+targetClass+" " + methodConstructor+" " +
+                        classShorthand + " object initialized. "+
+                        "appInfo = "+lpparam.appInfo);
             }
         });
 
@@ -821,6 +815,8 @@ public class MainHook implements IXposedHookLoadPackage {
 
                        Log.d("I/EdXposed-Bridge ",lpparam+" "+ targetClass+" "+
                                methodGetSystemService +" "+ "HELLO WORLD!!!");
+                        SaveLogsOfApp.setAllMethodsOfHooks( "8"+ targetClass+" "+
+                                methodGetSystemService +" "+ "HELLO WORLD!!!");
                     }
                 });
 
@@ -836,6 +832,9 @@ public class MainHook implements IXposedHookLoadPackage {
                         Log.d("I/EdXposed-Bridge ",lpparam+" "+targetClass+" "+
                                         methodGetSystemService+" "+sb.toString() + " Result Class Name = "
                                 + param.getResult().getClass().getName());
+                        SaveLogsOfApp.setAllMethodsOfHooks( "8"+targetClass+" "+
+                                methodGetSystemService+" "+sb.toString() + " Result Class Name = "
+                                + param.getResult().getClass().getName());
                     }
                 });
 
@@ -850,6 +849,9 @@ public class MainHook implements IXposedHookLoadPackage {
 
                         Log.d("I/EdXposed-Bridge ",lpparam+" "+ targetClass+" "+ methodGetSharedPreferences+" "+
                                 sb.toString() + " Result Class Name = " + param.getResult().getClass().getName());
+                        SaveLogsOfApp.setAllMethodsOfHooks("8"+targetClass+" "+ methodGetSharedPreferences+" "+
+                                sb.toString() + " Result Class Name = " + param.getResult().getClass().getName());
+
                     }
                 });
 
@@ -864,6 +866,10 @@ public class MainHook implements IXposedHookLoadPackage {
 
                         Log.d("I/EdXposed-Bridge ", lpparam+" "+targetClass+" "+
                                         methodGetSharedPreferences+" "+
+                                sb.toString() + " Result Class Name = " + param.getResult().getClass().getName());
+
+                        SaveLogsOfApp.setAllMethodsOfHooks("8"+targetClass+" "+
+                                methodGetSharedPreferences+" "+
                                 sb.toString() + " Result Class Name = " + param.getResult().getClass().getName());
                     }
                 });
